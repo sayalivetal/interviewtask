@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from "react";
-import {  useSelector } from "react-redux";
-import { selectUser } from "../slice/userSlice";
-
+import { useSelector, useDispatch } from "react-redux";
+import { selectUser, userLoginData } from "../slice/userSlice";
 
 const TableStructure = () => {
-  const { publicData, privateData } = useSelector(selectUser);
+  const dispatch = useDispatch();
+  const { publicData, privateData1, privateData2 } = useSelector(selectUser);
   const [position, setPosition] = useState("");
   const [list1, setList1] = useState([]);
   const [list2, setList2] = useState([]);
- 
-  const [initialColumns, setInitialColumns] = useState({ });
+  const email = localStorage.getItem("email");
+  const [initialColumns, setInitialColumns] = useState({});
 
-  useEffect(()=>{
+  
+  useEffect(() => {
     setInitialColumns({
       Public: {
         id: "public",
@@ -19,26 +20,22 @@ const TableStructure = () => {
       },
       Private: {
         id: "private",
-        list: privateData,
+        list: email == "usera@system.com" ? privateData1 : privateData2,
       },
-    })
-  },[publicData, privateData])
+    });
+  }, [publicData, privateData1, privateData2]);
 
   const handleDragEnter = (e, position) => {
     setPosition(position);
   };
 
-
-
   const handleDragEnd = (e, item) => {
     let a, b;
     if (position == "private") {
       a = initialColumns.Public.list.filter((elem) => {
-
         return elem !== item;
       });
       b = initialColumns.Public.list.filter((elem) => {
-    
         return elem == item;
       });
       setInitialColumns((state) => {
@@ -76,56 +73,59 @@ const TableStructure = () => {
       });
     }
 
+    setTimeout(() => {
+      dispatch(userLoginData({ a,b,position, email }));
+    }, 1000);
   };
 
   useEffect(() => {
     if (initialColumns?.Private?.list?.length > 0) {
       setList1([...initialColumns?.Private?.list]);
-    } else{
-      setList1([])
+    } else {
+      setList1([]);
     }
-     if (initialColumns?.Public?.list?.length > 0) {
+    if (initialColumns?.Public?.list?.length > 0) {
       setList2([...initialColumns?.Public?.list]);
-    }
-    else{
-      setList2([])
+    } else {
+      setList2([]);
     }
   }, [initialColumns]);
+
+ 
 
   return (
     <>
       <div className="row h-100">
-        {Object?.values(initialColumns)?.map((col,index) => {
+        {Object?.values(initialColumns)?.map((col, index) => {
           return (
             <div
-             key={index}
+              key={index}
               className="col-6"
               onDragEnter={(e) => handleDragEnter(e, col.id)}
             >
               <div className="card h-100">
-              <h5 className="card-header text-capitalize">{col.id}</h5>
-                
-              <div className="card-body">
-              {col?.list?.map((item, index) => {
-                return (
-                  <div className="card-item p-3 bg-light cursor-pointer border mb-2"
-                    onDragEnd={(e) => handleDragEnd(e, item)}
-                    key={index}
-                    draggable
-                  >
-                    {item}
-                  </div>
-                );
-              })}
-              </div>
+                <h5 className="card-header text-capitalize">{col.id}</h5>
+
+                <div className="card-body">
+                  {col?.list?.map((item, index) => {
+                    return (
+                      <div
+                        className="card-item p-3 bg-light cursor-pointer border mb-2"
+                        onDragEnd={(e) => handleDragEnd(e, item)}
+                        key={index}
+                        draggable
+                      >
+                        {item}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           );
         })}
-
-       
       </div>
-      </>
+    </>
   );
 };
 

@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from "react";
 import TableStructure from "./TableStructure";
 import { useDispatch, useSelector } from "react-redux";
-import { selectUser, userLoginData } from "../slice/userSlice";
+import { selectUser, userLoginData, logout } from "../slice/userSlice";
+import { useNavigate } from "react-router-dom";
 const Home = () => {
   const dispatch = useDispatch();
-  const { publicData, privateData } = useSelector(selectUser);
+  const navigate = useNavigate();
+  const { userDetails } = useSelector(selectUser);
+  const { publicData, privateData1, privateData2 } = useSelector(selectUser);
   const [submitError, setSubmitError] = useState("");
-  // const [formError, setFormError] = useState({
-  //   emailError: "",
-  //   passError: "",
-  // })
+
+  const email = localStorage.getItem("email");
   const [details, setDetails] = useState({
     name: "",
     data: "",
+    email,
   });
-
+  console.log(details.data);
   const handleChange = (e) => {
     setDetails(() => ({
       ...details,
@@ -27,19 +29,36 @@ const Home = () => {
     }
   }, [details]);
   const handleSubmit = (e) => {
-   
     e.preventDefault();
     if (details.name == "" || details.data == "") {
-      setSubmitError("Please fill this field");
+      setSubmitError("Please fill all fields");
     } else {
       dispatch(userLoginData(details));
+
       e.target.reset();
     }
- 
+  };
+
+  const handleLogout = (e) => {
+    //dispatch(logout())
+    e.preventDefault();
+
+    navigate("/");
   };
 
   return (
     <div className="container p-4">
+      <div className="row">
+        <div className="col-12 d-flex">
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="btn btn-primary ml-auto mb-3"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
       <div className="row">
         <div className="col-4">
           <div className="card ">
@@ -55,9 +74,6 @@ const Home = () => {
                     id="inputPassword2"
                     onChange={handleChange}
                   />
-                  <div className="text-danger text-sm ">
-                    {<span>{submitError}</span>}
-                  </div>
                 </div>
                 <div className="col-12 d-flex mb-3">
                   <div className="form-check me-3">
@@ -70,12 +86,8 @@ const Home = () => {
                       onChange={handleChange}
                     />
                     <label className="form-check-label">Public</label>
-                    <div className="text-danger text-sm ">
-                      {<span>{submitError}</span>}
-                    </div>
-                    
                   </div>
-                  <div className="form-check ">
+                  <div className="form-check">
                     <input
                       className="form-check-input"
                       type="radio"
@@ -85,13 +97,11 @@ const Home = () => {
                       onChange={handleChange}
                     />
                     <label className="form-check-label">Private</label>
-                    <div className="text-danger text-sm ">
-                      {<span>{submitError}</span>}
-                    </div>
-                    
                   </div>
                 </div>
-
+                <div className="text-danger text-sm ">
+                  {<span>{submitError}</span>}
+                </div>
                 <div className="col-12 mb-3">
                   <button type="submit" className="btn btn-primary mb-3">
                     Add Data

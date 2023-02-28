@@ -3,28 +3,34 @@ import { useDispatch, useSelector } from "react-redux";
 import { login, selectUser } from "../slice/userSlice";
 import { useNavigate } from "react-router-dom";
 
-
 const Test = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userDetails } = useSelector(selectUser);
+
+  const [userData1, setUserDetails] = useState([]);
   const [userData, setUserData] = useState({
     email: "",
     password: "",
   });
-  const [submitError, setSubmitError] = useState("")
+  const [submitError, setSubmitError] = useState("");
   const [formError, setFormError] = useState({
     emailError: "",
     passError: "",
-  })
+  });
+  useEffect(() => {
+    if (userDetails.length > 0) {
+      setUserDetails([...userDetails]);
+    }
+  }, [userDetails]);
   const handleChange = (e) => {
     const { name, value } = e.target;
-   
+
     setUserData((userData) => {
-        return {
-            ...userData,
-            [name]: value,
-        }
+      return {
+        ...userData,
+        [name]: value,
+      };
     });
     if (
       name == "email" &&
@@ -64,61 +70,76 @@ const Test = () => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-   
-    if (userData.email == "" || userData.password == "" || formError.emailError || formError.passError) {
-       
-        setSubmitError("Please fill this field");
-      } else {
-       dispatch(login(userData));
-       e.target.reset();
-      }
+
+    if (
+      userData.email == "" ||
+      userData.password == "" ||
+      formError.emailError ||
+      formError.passError
+    ) {
+      setSubmitError("Please fill this field");
+    } else {
+      localStorage.setItem("email", userData?.email);
+      dispatch(login());
+    }
   };
   useEffect(() => {
-    //alert("csdd")
-    if(userDetails?.email) {
-      navigate("/home");
-    }
-  }, [userDetails]);
+    userData1?.map((item, index) => {
+      if (item.email == userData.email) {
+        navigate("/home");
+      }
+    });
+  }, [userData1]);
   return (
     <div className="col-3 m-auto">
-        <div className="card ">
-        <h4 className="card-header">
-            Login Form
-        </h4>
+      <div className="card ">
+        <h4 className="card-header">Login Form</h4>
         <div className="card-body">
-            <form className="row g-3" onSubmit={handleSubmit}>
-                <div className="col-12">
-                <label className="visually-hidden">Email</label>
-                <input
-                    type="text"
-                    className="form-control"
-                    id="staticEmail2"
-                    name="email"
-                    onChange={handleChange}
-                    placeholder="Enter Email"
-                />
-                <div className="text-danger text-sm ">{!userData.email ? <span>{submitError}</span> : <span>{formError.emailError}</span>}</div>
-                </div>
-                <div className="col-12">
-                <label className="visually-hidden">Password</label>
-                <input
-                    type="password"
-                    className="form-control"
-                    id="inputPassword2"
-                    placeholder="Enter Password"
-                    name="password"
-                    onChange={handleChange}
-                />
-                <div className="text-danger text-sm ">{!userData.password ? <span>{submitError}</span> : <span>{formError.passError}</span>}</div>
-                </div>
-                <div className="col-12">
-                <button type="submit" className="btn btn-primary mb-3">
-                    Login
-                </button>
-                </div>
-            </form>
+          <form className="row g-3" onSubmit={handleSubmit}>
+            <div className="col-12">
+              <label className="visually-hidden">Email</label>
+              <input
+                type="text"
+                className="form-control"
+                id="staticEmail2"
+                name="email"
+                onChange={handleChange}
+                placeholder="Enter Email"
+              />
+              <div className="text-danger text-sm ">
+                {!userData.email ? (
+                  <span>{submitError}</span>
+                ) : (
+                  <span>{formError.emailError}</span>
+                )}
+              </div>
+            </div>
+            <div className="col-12">
+              <label className="visually-hidden">Password</label>
+              <input
+                type="password"
+                className="form-control"
+                id="inputPassword2"
+                placeholder="Enter Password"
+                name="password"
+                onChange={handleChange}
+              />
+              <div className="text-danger text-sm ">
+                {!userData.password ? (
+                  <span>{submitError}</span>
+                ) : (
+                  <span>{formError.passError}</span>
+                )}
+              </div>
+            </div>
+            <div className="col-12">
+              <button type="submit" className="btn btn-primary mb-3">
+                Login
+              </button>
+            </div>
+          </form>
         </div>
-        </div>
+      </div>
     </div>
   );
 };
