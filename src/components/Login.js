@@ -19,7 +19,7 @@ const Test = () => {
   })
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log(name,  value)
+   
     setUserData((userData) => {
         return {
             ...userData,
@@ -64,12 +64,13 @@ const Test = () => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(userData)
+   
     if (userData.email == "" || userData.password == "" || formError.emailError || formError.passError) {
-        console.log("test")
+       
         setSubmitError("Please fill this field");
       } else {
        dispatch(login(userData));
+       e.target.reset();
       }
   };
   useEffect(() => {

@@ -6,6 +6,7 @@ export const UserSlice = createSlice({
     userDetails: {},
     publicData: [],
     privateData: [],
+    inDropZone: false, 
   },
   reducers: {
     login: (state, action) => {
@@ -15,27 +16,31 @@ export const UserSlice = createSlice({
         },
       };
     },
+    addToDropZone: (state,action) => {
+    
+      
+    },
     userLoginData: (state, action) => {
-      console.log(action.payload);
+     
       if (action?.payload?.data == "public") {
         if (!state.publicData) {
-          return { ...state, publicData: [action?.payload] };
+          return { ...state, publicData: [action?.payload?.name] };
         } else {
           return {
             ...state,
-            publicData: [...state.publicData, action?.payload],
+            publicData: [...state?.publicData, action?.payload.name],
           };
         }
       } else {
         if (!state.privateData) {
           return {
             ...state,
-            privateData: [action?.payload],
+            privateData: [action?.payload?.name],
           };
         } else {
           return {
             ...state,
-            privateData: [...state.privateData, action?.payload],
+            privateData: [...state?.privateData, action?.payload.name],
           };
         }
       }
@@ -43,6 +48,6 @@ export const UserSlice = createSlice({
   },
 });
 
-export const { login, userLoginData } = UserSlice.actions;
+export const { login, userLoginData,addToDropZone } = UserSlice.actions;
 export const selectUser = (state) => state.user;
 export default UserSlice.reducer;
