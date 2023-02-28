@@ -69,10 +69,11 @@ const Home = () => {
                       id="flexRadioDefault1"
                       onChange={handleChange}
                     />
+                    <label className="form-check-label">Public</label>
                     <div className="text-danger text-sm ">
                       {<span>{submitError}</span>}
                     </div>
-                    <label className="form-check-label">Public</label>
+                    
                   </div>
                   <div className="form-check ">
                     <input
@@ -83,10 +84,11 @@ const Home = () => {
                       id="flexRadioDefault2"
                       onChange={handleChange}
                     />
+                    <label className="form-check-label">Private</label>
                     <div className="text-danger text-sm ">
                       {<span>{submitError}</span>}
                     </div>
-                    <label className="form-check-label">Private</label>
+                    
                   </div>
                 </div>
 

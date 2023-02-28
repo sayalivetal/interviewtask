@@ -105,10 +105,10 @@ const TableStructure = () => {
               <div className="card h-100">
               <h5 className="card-header text-capitalize">{col.id}</h5>
                 
-              <div className="card-body p-0">
+              <div className="card-body">
               {col?.list?.map((item, index) => {
                 return (
-                  <div className="card-item p-2 border-bottom cursor-pointer"
+                  <div className="card-item p-3 bg-light cursor-pointer border mb-2"
                     onDragEnd={(e) => handleDragEnd(e, item)}
                     key={index}
                     draggable
